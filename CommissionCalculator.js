@@ -24,7 +24,7 @@ class CommissionCalculator {
     commission = commission > this.configurations.cash_in.max.amount
       ? this.configurations.cash_in.max.amount
       : commission;
-    return Number(commission.toFixed(2));
+    return commission;
   }
 
   /**
@@ -59,7 +59,7 @@ class CommissionCalculator {
         ? this.configurations.cash_out_juridical.min.amount
         : commission;
     }
-    return Number(commission.toFixed(2));
+    return commission;
   }
 
   /**
@@ -80,7 +80,7 @@ class CommissionCalculator {
         operation.date,
       );
     }
-    return Number(commission.toFixed(2));
+    return (Math.ceil(commission * 100) / 100);
   }
 }
 
