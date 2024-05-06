@@ -1,55 +1,41 @@
-const axios = require('axios');
+const nock = require('nock');
 const CommissionConfigFetcher = require('../CommissionConfigFetcher');
 
-jest.mock('axios');
-
-/**
- * Test suite for the CommissionConfigFetcher class.
- */
 describe('CommissionConfigFetcher', () => {
-  let commissionConfigFetcher;
-  /**
-   * Mock API URL for testing.
-   * @type {string}
-   */
-  const mockApiUrl = 'http://mockapi.com';
-  /**
-   * Mock endpoint for testing.
-   * @type {string}
-   */
-  const mockEndpoint = 'endpoint';
+  let fetcher;
 
-  /**
-   * Setup for each test case. Initializes a new CommissionConfigFetcher instance.
-   */
   beforeEach(() => {
-    commissionConfigFetcher = new CommissionConfigFetcher(mockApiUrl);
+    fetcher = new CommissionConfigFetcher('http://api.example.com');
   });
 
-  /**
-   * Test case for a successful fetch operation.
-   */
-  it('fetches configuration correctly', async () => {
+  it('throws an error when constructed with an invalid URL', () => {
+    expect(() => new CommissionConfigFetcher('not a url')).toThrow('Invalid API URL');
+  });
+
+  it('throws an error when fetchConfig is called with a non-string endpoint', () => {
+    expect(fetcher.fetchConfig(123)).rejects.toThrow('Endpoint must be a string');
+  });
+
+  it('fetches config from the correct endpoint', async () => {
+    const endpoint = 'config';
     const mockData = { key: 'value' };
-    // Mocking a successful axios get request
-    axios.get.mockResolvedValue({ data: mockData });
 
-    const result = await commissionConfigFetcher.fetchConfig(mockEndpoint);
+    nock('http://api.example.com')
+      .get(`/${endpoint}`)
+      .reply(200, mockData);
 
-    // Expecting the result to be equal to the mock data
-    expect(result).toEqual(mockData);
-    // Expecting axios.get to have been called with the correct URL
-    expect(axios.get).toHaveBeenCalledWith(`${mockApiUrl}/${mockEndpoint}`);
+    const data = await fetcher.fetchConfig(endpoint);
+
+    expect(data).toEqual(mockData);
   });
 
-  /**
-   * Test case for a failed fetch operation.
-   */
-  it('throws an error when API request fails', async () => {
-    // Mocking a failed axios get request
-    axios.get.mockRejectedValue(new Error('API request failed'));
+  it('throws an error when the API request fails', async () => {
+    const endpoint = 'config';
 
-    // Expecting the fetchConfig method to throw an error
-    await expect(commissionConfigFetcher.fetchConfig(mockEndpoint)).rejects.toThrow('API request failed');
+    nock('http://api.example.com')
+      .get(`/${endpoint}`)
+      .replyWithError('API request failed');
+
+    await expect(fetcher.fetchConfig(endpoint)).rejects.toThrow('API request failed');
   });
 });
