@@ -36,37 +36,3 @@ To run the project in development mode, use the command:
 ```shell
 npm run start
 ```
-
-### If you want to run a build version:
-
-Install dependencies if you haven't done that before
-
-```shell
-npm i
-```
-
-Build project
-
-```shell
-npm run build
-```
-
-Navigate to the build folder
-
-```shell
-cd build
-```
-
-Run app
-
-```shell
-node index.js
-```
-
-### Run tests
-
-Use
-
-```shell
-npm run test
-```
