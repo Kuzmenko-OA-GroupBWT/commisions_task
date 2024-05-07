@@ -21,12 +21,12 @@
  cp .env.example .env
 ```
 
-- Set up the `COMMISSION_FEE_CONFIG_API_URL` variable in your `.env` file.
+- Set up the `MAIN_API` variable in your `.env` file.
 
 ### `.env` example
 
 ```dotenv
-COMMISSION_FEE_CONFIG_API_URL=https://developers.com/tasks/api
+MAIN_API=https://developers.com/tasks/api
 ```
 
 # Usage
